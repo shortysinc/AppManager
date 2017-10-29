@@ -54,26 +54,26 @@ public class FirstInterface {
 	private void parser(Dirs dir, String ip) {
 		switch (dir) {
 		case IE:
-			this.setCommand("cmd /s "+ip+" /f /im"+ dir.toString());
+			this.setCommand("cmd /s "+ip+" /f /im iexplore.exe");
 			break;
 		case EDGE:
-			
+			this.setCommand("cmd /s "+ip+" /f /im MicrosoftEdge.exe");
 			break;
 			
 		case EXCEL:
-			
+			this.setCommand("cmd /s "+ip+" /f /im excel.exe");
 			break;
 		case WORD:
-			
+			this.setCommand("cmd /s "+ip+" /f /im winword.exe");
 			break;
 		case ONELOG:
-			
+			this.setCommand("cmd /s "+ip+" /f /im LoginApplication.exe");
 			break;
 		case GP:
-			
+			this.setCommand("cmd /s "+ip+" /f /im pangpa.exe");
 			break;
 		case CHROME:
-			
+			this.setCommand("cmd /s "+ip+" /f /im chrome.exe");
 			break;
 		default:
 			break;

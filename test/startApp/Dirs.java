@@ -13,7 +13,12 @@ public enum Dirs {
 	
 	Dir1("Internet Explorer"),
 	Dir2("Edge"),
-	Dir3("Excel");
+	Dir3("Excel"),
+	Dir4("Word"),
+	Dir5("Onelog"),
+	Dir6("Global Protect"),
+	Dir7("Chrome");
+	;
 	
     private final String Proceso;       
 	

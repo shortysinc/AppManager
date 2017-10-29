@@ -1,20 +1,20 @@
 package startApp;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import java.awt.Font;
 import javax.swing.JProgressBar;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Color;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.Toolkit;
 
 public class FirstInterface {
 
@@ -38,6 +38,7 @@ public class FirstInterface {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(FirstInterface.class.getResource("/startApp/CGP.png")));
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 439, 132);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,10 +80,9 @@ public class FirstInterface {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				 for (int i = progressBar.getMinimum(); i <= progressBar.getMaximum(); i++) {
-				      final int percent = i;
-				      updateBar(percent);
+				      updateBar(i);
 				      try {
-						Thread.sleep(10);
+						Thread.sleep(100);
 					} catch (InterruptedException exceptionThreadPB) {
 						exceptionThreadPB.printStackTrace();
 					}

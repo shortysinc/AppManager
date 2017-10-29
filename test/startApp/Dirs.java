@@ -12,7 +12,8 @@ package startApp;
 public enum Dirs {
 	
 	Dir1("Internet Explorer"),
-	Dir2("Edge");
+	Dir2("Edge"),
+	Dir3("Excel");
 	
     private final String Proceso;       
 	

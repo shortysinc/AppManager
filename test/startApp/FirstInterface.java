@@ -9,6 +9,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import java.awt.Font;
+import javax.swing.JProgressBar;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class FirstInterface {
 
@@ -28,40 +33,55 @@ public class FirstInterface {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 439, 106);
+		frame.setBounds(100, 100, 439, 132);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel IpLabel = new JLabel("IP/Machine Name:");
-		IpLabel.setBounds(10, 11, 108, 14);
+		IpLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		IpLabel.setBounds(10, 11, 98, 14);
 		frame.getContentPane().add(IpLabel);
 		
 		JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
+		OptionChooser.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		OptionChooser.setModel(new DefaultComboBoxModel<Dirs>(Dirs.values()));
 		OptionChooser.setBounds(281, 8, 137, 20);
 		frame.getContentPane().add(OptionChooser);
 		
 		ip = new JTextField();
-		ip.setBounds(101, 8, 116, 20);
+		ip.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		ip.setBounds(108, 8, 109, 20);
 		frame.getContentPane().add(ip);
 		ip.setColumns(10);
 		
 		JLabel lblProcess = new JLabel("Process:");
+		lblProcess.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblProcess.setBounds(234, 11, 46, 14);
 		frame.getContentPane().add(lblProcess);
 		
 		JTextArea execution = new JTextArea();
+		execution.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		execution.setEditable(false);
-		execution.setBounds(10, 32, 207, 34);
+		execution.setBounds(10, 32, 207, 60);
 		frame.getContentPane().add(execution);
 		
 		JButton SendButton = new JButton("Send");
-		SendButton.setBounds(234, 39, 89, 23);
+		SendButton.setBounds(234, 69, 89, 23);
 		frame.getContentPane().add(SendButton);
 		
 		JButton CancelButton = new JButton("Cancel");
-		CancelButton.setBounds(333, 39, 89, 23);
+		CancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		CancelButton.setBounds(329, 69, 89, 23);
 		frame.getContentPane().add(CancelButton);
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setForeground(new Color(0, 128, 0));
+		progressBar.setBounds(234, 44, 184, 14);
+		frame.getContentPane().add(progressBar);
 	}
 	
 

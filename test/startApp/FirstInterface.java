@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.Font;
@@ -19,12 +20,17 @@ public class FirstInterface {
 
 	private JFrame frame;
 	private JTextField ip;
+	JProgressBar progressBar = new JProgressBar();
 
 	/**
 	 * Create the application.
 	 */
 	public FirstInterface() {
 		initialize();
+	}
+	
+	private void updateBar(int newValue) {
+	    progressBar.setValue(newValue);
 	}
 
 	/**
@@ -68,6 +74,21 @@ public class FirstInterface {
 		JButton SendButton = new JButton("Send");
 		SendButton.setBounds(234, 69, 89, 23);
 		frame.getContentPane().add(SendButton);
+		SendButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 for (int i = progressBar.getMinimum(); i <= progressBar.getMaximum(); i++) {
+				      final int percent = i;
+				      updateBar(percent);
+				      try {
+						Thread.sleep(10);
+					} catch (InterruptedException exceptionThreadPB) {
+						exceptionThreadPB.printStackTrace();
+					}
+				 }
+			}
+		});
 		
 		JButton CancelButton = new JButton("Cancel");
 		CancelButton.addActionListener(new ActionListener() {
@@ -78,9 +99,12 @@ public class FirstInterface {
 		CancelButton.setBounds(329, 69, 89, 23);
 		frame.getContentPane().add(CancelButton);
 		
-		JProgressBar progressBar = new JProgressBar();
+		
+		progressBar.setMinimum(0);
+		progressBar.setMaximum(100);
+		progressBar.setStringPainted(true);
 		progressBar.setForeground(new Color(0, 128, 0));
-		progressBar.setBounds(234, 44, 184, 14);
+		progressBar.setBounds(234, 39, 184, 19);
 		frame.getContentPane().add(progressBar);
 	}
 	

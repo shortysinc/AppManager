@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import java.awt.Toolkit;
-import java.awt.Window.Type;
 
 public class FirstInterface {
 
@@ -54,10 +53,10 @@ public class FirstInterface {
 	private void parser(Dirs dir, String ip) {
 		switch (dir) {
 		case IE:
-			this.setCommand("cmd /s "+ip+" /f /im iexplore.exe");
+			this.setCommand("cmd /s "+ip+" /f /im "+ dir.toString());
 			break;
 		case EDGE:
-			this.setCommand("cmd /s "+ip+" /f /im MicrosoftEdge.exe");
+			this.setCommand("cmd /s "+ip+" /f /im "+dir.toString());
 			break;
 			
 		case EXCEL:
@@ -158,6 +157,8 @@ public class FirstInterface {
 				        ;
 				      }
 				    }
+				parser(Dirs.CHROME, "10.30.44.31");
+				execution.setText(command);
 				
 			}
 			

@@ -11,14 +11,13 @@ package startApp;
 
 public enum Dirs {
 	
-	Dir1("Internet Explorer"),
-	Dir2("Edge"),
-	Dir3("Excel"),
-	Dir4("Word"),
-	Dir5("Onelog"),
-	Dir6("Global Protect"),
-	Dir7("Chrome");
-	;
+	IE("Internet Explorer"),
+	EDGE("Edge"),
+	EXCEL("Excel"),
+	WORD("Word"),
+	ONELOG("Onelog"),
+	GP("Global Protect"),
+	CHROME("Chrome");
 	
     private final String Proceso;       
 	

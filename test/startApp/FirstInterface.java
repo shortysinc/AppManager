@@ -1,27 +1,44 @@
-/**
- * 
- */
 package startApp;
 
-/**
- * @author EXT127
- *
- */
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+
 public class FirstInterface {
 
+	private JFrame frame;
+
 	/**
-	 * 
+	 * Launch the application.
 	 */
-	public FirstInterface() {
-		// TODO Auto-generated constructor stub
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					FirstInterface window = new FirstInterface();
+					window.frame.setVisible(true);
+		
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	/**
-	 * @param args
+	 * Create the application.
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public FirstInterface() {
+		initialize();
+	}
 
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 }

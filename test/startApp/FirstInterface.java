@@ -3,33 +3,47 @@ package startApp;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
-import java.awt.Toolkit;
 
 public class FirstInterface {
 
 	private JFrame KillProcesses;
 	private JTextField ip;
 	JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
+	
+	private String command="";
+	
+	private Pattern pattern;
+    private Matcher matcher;
+    
+    private static final String IPADDRESS_PATTERN =
+    		"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+    		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+    		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+    		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+    
 	public FirstInterface(JComboBox<Dirs> optionChooser) {
-		super();
+		pattern = Pattern.compile(IPADDRESS_PATTERN);
 		OptionChooser = optionChooser;
 	}
 
-
-	private String command="";
+	private boolean ipValidator(final String ip){
+		  matcher = pattern.matcher(ip);
+		  return (matcher.matches() && !ip.equals(""));
+	}
+	
 
 	public String getCommand() {
 		return this.command;
@@ -147,9 +161,10 @@ public class FirstInterface {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
-				execution.setText(command);
-				System.out.println(command);
+				//parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
+				//execution.setText(command);
+				//System.out.println(command);
+				
 				
 			}
 			
@@ -187,5 +202,33 @@ public class FirstInterface {
 				}
 			}
 		});
+	}
+
+	/**
+	 * @return the matcher
+	 */
+	public Matcher getMatcher() {
+		return matcher;
+	}
+
+	/**
+	 * @param matcher the matcher to set
+	 */
+	public void setMatcher(Matcher matcher) {
+		this.matcher = matcher;
+	}
+
+	/**
+	 * @return the pattern
+	 */
+	public Pattern getPattern() {
+		return pattern;
+	}
+
+	/**
+	 * @param pattern the pattern to set
+	 */
+	public void setPattern(Pattern pattern) {
+		this.pattern = pattern;
 	}
 }

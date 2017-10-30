@@ -21,7 +21,10 @@ public class FirstInterface {
 
 	private JFrame KillProcesses;
 	private JTextField ip;
+	
+
 	JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
+	
 	
 	private String command="";
 	
@@ -39,6 +42,7 @@ public class FirstInterface {
 		OptionChooser = optionChooser;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean ipValidator(final String ip){
 		  matcher = pattern.matcher(ip);
 		  return (matcher.matches() && !ip.equals(""));
@@ -121,7 +125,7 @@ public class FirstInterface {
 		OptionChooser.setBounds(281, 8, 137, 20);
 		KillProcesses.getContentPane().add(OptionChooser);
 		
-		ip = new JTextField();
+		
 		ip.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		ip.setBounds(108, 8, 109, 20);
 		KillProcesses.getContentPane().add(ip);
@@ -164,8 +168,14 @@ public class FirstInterface {
 				//parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
 				//execution.setText(command);
 				//System.out.println(command);
-				
-				
+				//String ipField=ip.getText();
+				//Dirs option= (Dirs) OptionChooser.getSelectedItem();
+				/*if(ipValidator(ipField)) {
+					parser(option, ipField);
+				}
+				else {
+					execution.setText("La IP introducida no es correcta...");
+				}*/
 			}
 			
 			
@@ -230,5 +240,19 @@ public class FirstInterface {
 	 */
 	public void setPattern(Pattern pattern) {
 		this.pattern = pattern;
+	}
+	
+	/**
+	 * @return the ip
+	 */
+	public JTextField getIp() {
+		return ip;
+	}
+
+	/**
+	 * @param ip the ip to set
+	 */
+	public void setIp(JTextField ip) {
+		this.ip = ip;
 	}
 }

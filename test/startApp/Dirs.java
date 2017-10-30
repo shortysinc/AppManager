@@ -27,9 +27,10 @@ public enum Dirs {
 	
 	@Override
     public String toString() {
-		return this.getProcess();
+		return this.dir;
     }
 	
+	/*
 	private String getProcess() {
 		switch (this) {
 			case CHROME:
@@ -50,6 +51,7 @@ public enum Dirs {
 				return this.setDir("UNKNOWN");
 		}
 	}
+	*/
 
 	/**
 	 * @return the dir

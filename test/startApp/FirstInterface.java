@@ -145,21 +145,7 @@ public class FirstInterface {
 		JButton SendButton = new JButton("Send");
 		SendButton.setBounds(234, 40, 89, 23);
 		KillProcesses.getContentPane().add(SendButton);
-		/*
-		SendButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				 for (int i = progressBar.getMinimum(); i <= progressBar.getMaximum(); i++) {
-				      updateBar(i);
-				      try {
-						Thread.sleep(100);
-					} catch (InterruptedException exceptionThreadPB) {
-						exceptionThreadPB.printStackTrace();
-					}
-				 }
-			}
-		});*/
+		
 		
 		SendButton.addActionListener(new ActionListener() {
 

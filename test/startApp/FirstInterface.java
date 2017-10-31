@@ -198,7 +198,7 @@ public class FirstInterface {
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
 				if(ipValidator(ipField)) {
-					if(getCommand().contains("explorer")||getCommand().contains("pangp")) {
+					if(getCommand().contains("explorer")||getCommand().contains("pangp")) { //falla aquí
 						parser(option, ipField);
 						ExecuteService();
 					}

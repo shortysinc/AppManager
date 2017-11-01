@@ -46,7 +46,7 @@ public class FirstInterface {
 
 	private boolean ipValidator(final String ip){
 		  matcher = pattern.matcher(ip);
-		  return (matcher.matches() && !ip.equals(""));
+		  return ((matcher.matches() && !ip.equals("")) || ip.equals("localhost"));
 	}
 	
 
@@ -211,7 +211,7 @@ public class FirstInterface {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
-				execution.setText(command);
+				//execution.setText(command);
 				//System.out.println(command);
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();

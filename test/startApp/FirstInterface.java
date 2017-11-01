@@ -17,12 +17,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JCheckBox;
 
 public class FirstInterface {
 
 	private JFrame KillProcesses;
 	private JTextField ip= new JTextField();
 	JTextArea execution = new JTextArea();
+	JCheckBox chckbxServiceOn = new JCheckBox("Service On");
+	
+
+	JCheckBox chckbxServiceOff = new JCheckBox("Service Off");
 
 	JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
 	
@@ -49,13 +54,41 @@ public class FirstInterface {
 	}
 	
 
-	public String getCommand() {
+	private String getCommand() {
 		return this.command;
 	}
 	
-	public void setCommand(String command) {
+	private void setCommand(String command) {
 		this.command=command;
 		
+	}
+	
+	/**
+	 * @return the chckbxServiceOn
+	 */
+	public JCheckBox getChckbxServiceOn() {
+		return chckbxServiceOn;
+	}
+
+	/**
+	 * @param chckbxServiceOn the chckbxServiceOn to set
+	 */
+	public void setChckbxServiceOn(JCheckBox chckbxServiceOn) {
+		this.chckbxServiceOn = chckbxServiceOn;
+	}
+
+	/**
+	 * @return the chckbxServiceOff
+	 */
+	public JCheckBox getChckbxServiceOff() {
+		return chckbxServiceOff;
+	}
+
+	/**
+	 * @param chckbxServiceOff the chckbxServiceOff to set
+	 */
+	public void setChckbxServiceOff(JCheckBox chckbxServiceOff) {
+		this.chckbxServiceOff = chckbxServiceOff;
 	}
 	
 	/**
@@ -89,12 +122,14 @@ public class FirstInterface {
 			break;
 		case ONELOG:
 			//this.setCommand("taskkill /s "+ip+" /f /im LoginApplication.exe");
+			this.setCommand("");
 			this.setServiceOff("sc \\\\"+ip+" stop \"ITS Onelog Client\"");
 			this.setServiceON("sc \\\\"+ip+" start  \"ITS Onelog Client\"");
 			break;
 		case GP:
 			//this.setCommand("taskkill /s "+ip+" /f /im pangpa.exe");
 			//this.setCommand("sc \\\\"+ip+" stop pangps && timeout 5 && sc \\\\"+ip+" start pangps");
+			this.setCommand("");
 			this.setServiceOff("sc \\\\"+ip+" stop pangps");
 			this.setServiceON("sc \\\\"+ip+" start pangps");
 			break;
@@ -108,12 +143,12 @@ public class FirstInterface {
 	
 	private void ExecuteCMD() {
 		String commandRemote = this.getCommand();
-		System.out.println(commandRemote);
+		//System.out.println(commandRemote);
 		//String command = "powershell Rename-Item -path " + path.toString() + " -NewName "+ path.toString()+".old" + " -force ";
 		try {
 			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
 			CMDProcess.getOutputStream().close();
-			execution.append("\nSe ha cerrado correctamente el proceso");
+			execution.append("\nSe ha cerrado correctamente\nel proceso");
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
@@ -124,18 +159,32 @@ public class FirstInterface {
 	private void ExecuteService() {
 		String ServiceON = this.getServiceON();
 		String ServiceOff = this.getServiceOff();
+		//System.out.println(ServiceOff);
+		//System.out.println(ServiceON);
 		try {
-			Process SON = Runtime.getRuntime().exec(ServiceON);
-			SON.getOutputStream().close();
-			Thread.sleep(25);
-			Process SOff = Runtime.getRuntime().exec(ServiceOff);
-			SOff.getOutputStream().close();
-			execution.append("\nSe ha reiniciado correctamente el proceso");
+			
+			Process s_Off = Runtime.getRuntime().exec(ServiceOff);
+			System.out.println(s_Off.getOutputStream());
+			s_Off.getOutputStream().close();
+			
+			
+			Thread.sleep(5000); //Pausa durante 5 segundos...
+			
+			Process s_ON = Runtime.getRuntime().exec(ServiceON);
+			s_ON.getOutputStream().close();
+			execution.append("Se ha reiniciado correctamente\nel proceso");
+			
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
 			//e.getStackTrace();
 		}
+	}
+	
+	@test
+	private boolean isService() {
+		 return getCommand().equals("");
+		
 	}
 
 	/**
@@ -149,7 +198,7 @@ public class FirstInterface {
 		KillProcesses.setTitle("Kill Processes");
 		KillProcesses.setIconImage(Toolkit.getDefaultToolkit().getImage(FirstInterface.class.getResource("/startApp/CGP.png")));
 		KillProcesses.setResizable(false);
-		KillProcesses.setBounds(100, 100, 472, 104);
+		KillProcesses.setBounds(100, 100, 472, 133);
 		KillProcesses.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		KillProcesses.getContentPane().setLayout(null);
 		
@@ -180,11 +229,11 @@ public class FirstInterface {
 		
 		execution.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		execution.setEditable(false);
-		execution.setBounds(10, 32, 248, 32);
+		execution.setBounds(10, 32, 248, 66);
 		KillProcesses.getContentPane().add(execution);
 		
 		JButton SendButton = new JButton("Send");
-		SendButton.setBounds(270, 40, 89, 23);
+		SendButton.setBounds(270, 75, 89, 23);
 		KillProcesses.getContentPane().add(SendButton);
 		
 		
@@ -198,7 +247,7 @@ public class FirstInterface {
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
 				if(ipValidator(ipField)) {
-					if(getCommand().contains("explorer")||getCommand().contains("pangp")) { //falla aquí
+					if(isService()) { //falla aquí1
 						parser(option, ipField);
 						ExecuteService();
 					}
@@ -215,14 +264,24 @@ public class FirstInterface {
 			
 		}});
 		
-		JButton CancelButton = new JButton("Cancel");
+		JButton CancelButton = new JButton("Exit");
 		CancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
 		});
-		CancelButton.setBounds(365, 40, 89, 23);
+		CancelButton.setBounds(365, 75, 89, 23);
 		KillProcesses.getContentPane().add(CancelButton);
+		
+		
+		chckbxServiceOn.setBackground(Color.LIGHT_GRAY);
+		chckbxServiceOn.setBounds(270, 45, 89, 18);
+		KillProcesses.getContentPane().add(chckbxServiceOn);
+		
+		
+		chckbxServiceOff.setBackground(Color.LIGHT_GRAY);
+		chckbxServiceOff.setBounds(365, 45, 89, 18);
+		KillProcesses.getContentPane().add(chckbxServiceOff);
 	}
 	
 
@@ -303,6 +362,4 @@ public class FirstInterface {
 	public void setServiceOff(String serviceOff) {
 		ServiceOff = serviceOff;
 	}
-	
-	
 }

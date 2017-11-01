@@ -17,17 +17,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JCheckBox;
+
 
 public class FirstInterface {
 
 	private JFrame KillProcesses;
 	private JTextField ip= new JTextField();
 	JTextArea execution = new JTextArea();
-	JCheckBox chckbxServiceOn = new JCheckBox("Service On");
-	
-
-	JCheckBox chckbxServiceOff = new JCheckBox("Service Off");
 
 	JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
 	
@@ -63,33 +59,6 @@ public class FirstInterface {
 		
 	}
 	
-	/**
-	 * @return the chckbxServiceOn
-	 */
-	public JCheckBox getChckbxServiceOn() {
-		return chckbxServiceOn;
-	}
-
-	/**
-	 * @param chckbxServiceOn the chckbxServiceOn to set
-	 */
-	public void setChckbxServiceOn(JCheckBox chckbxServiceOn) {
-		this.chckbxServiceOn = chckbxServiceOn;
-	}
-
-	/**
-	 * @return the chckbxServiceOff
-	 */
-	public JCheckBox getChckbxServiceOff() {
-		return chckbxServiceOff;
-	}
-
-	/**
-	 * @param chckbxServiceOff the chckbxServiceOff to set
-	 */
-	public void setChckbxServiceOff(JCheckBox chckbxServiceOff) {
-		this.chckbxServiceOff = chckbxServiceOff;
-	}
 	
 	/**
 	 * Create the application.
@@ -198,7 +167,7 @@ public class FirstInterface {
 		KillProcesses.setTitle("Kill Processes");
 		KillProcesses.setIconImage(Toolkit.getDefaultToolkit().getImage(FirstInterface.class.getResource("/startApp/CGP.png")));
 		KillProcesses.setResizable(false);
-		KillProcesses.setBounds(100, 100, 472, 133);
+		KillProcesses.setBounds(100, 100, 472, 108);
 		KillProcesses.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		KillProcesses.getContentPane().setLayout(null);
 		
@@ -229,11 +198,11 @@ public class FirstInterface {
 		
 		execution.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		execution.setEditable(false);
-		execution.setBounds(10, 32, 248, 66);
+		execution.setBounds(10, 32, 248, 40);
 		KillProcesses.getContentPane().add(execution);
 		
 		JButton SendButton = new JButton("Send");
-		SendButton.setBounds(270, 75, 89, 23);
+		SendButton.setBounds(270, 40, 89, 23);
 		KillProcesses.getContentPane().add(SendButton);
 		
 		
@@ -270,18 +239,8 @@ public class FirstInterface {
 				System.exit(0);
 			}
 		});
-		CancelButton.setBounds(365, 75, 89, 23);
+		CancelButton.setBounds(365, 40, 89, 23);
 		KillProcesses.getContentPane().add(CancelButton);
-		
-		
-		chckbxServiceOn.setBackground(Color.LIGHT_GRAY);
-		chckbxServiceOn.setBounds(270, 45, 89, 18);
-		KillProcesses.getContentPane().add(chckbxServiceOn);
-		
-		
-		chckbxServiceOff.setBackground(Color.LIGHT_GRAY);
-		chckbxServiceOff.setBounds(365, 45, 89, 18);
-		KillProcesses.getContentPane().add(chckbxServiceOff);
 	}
 	
 

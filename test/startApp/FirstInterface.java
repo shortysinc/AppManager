@@ -156,7 +156,7 @@ public class FirstInterface {
 		}
 	}
 	
-	private void ExecuteService() {
+	private void restartService() {
 		String ServiceON = this.getServiceON();
 		String ServiceOff = this.getServiceOff();
 		//System.out.println(ServiceOff);
@@ -249,7 +249,7 @@ public class FirstInterface {
 				if(ipValidator(ipField)) {
 					if(isService()) { //falla aquí1
 						parser(option, ipField);
-						ExecuteService();
+						restartService();
 					}
 					else {
 						parser(option, ipField);

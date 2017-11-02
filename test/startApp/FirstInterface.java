@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.JProgressBar;
 
 
 public class FirstInterface {
@@ -24,22 +26,22 @@ public class FirstInterface {
 	private JFrame KillProcesses;
 	private JTextField ip= new JTextField();
 	JTextArea execution = new JTextArea();
-
 	JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
-	
-	
+	JProgressBar progressBar = new JProgressBar();
+	static final int MY_MINIMUM = 0;
+	static final int MY_MAXIMUM = 100;
 	private String command, ServiceON, ServiceOff="";
-	
 	private Pattern pattern;
     private Matcher matcher;
-    
     private static final String IPADDRESS_PATTERN =
     		"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
     		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
     		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
     		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
     
-	public FirstInterface(JComboBox<Dirs> optionChooser) {
+	
+    
+    public FirstInterface(JComboBox<Dirs> optionChooser) {
 		pattern = Pattern.compile(IPADDRESS_PATTERN);
 		OptionChooser = optionChooser;
 	}
@@ -59,6 +61,47 @@ public class FirstInterface {
 		
 	}
 	
+	/**
+	 * @return the serviceON
+	 */
+	private String getServiceON() {
+		return ServiceON;
+	}
+
+	/**
+	 * @param serviceON the serviceON to set
+	 */
+	private void setServiceON(String serviceON) {
+		ServiceON = serviceON;
+	}
+
+	/**
+	 * @return the serviceOff
+	 */
+	private String getServiceOff() {
+		return ServiceOff;
+	}
+
+	/**
+	 * @param serviceOff the serviceOff to set
+	 */
+	private void setServiceOff(String serviceOff) {
+		ServiceOff = serviceOff;
+	}
+
+	/**
+	 * @return the progressBar
+	 */
+	public JProgressBar getProgressBar() {
+		return progressBar;
+	}
+
+	/**
+	 * @param progressBar the progressBar to set
+	 */
+	public void setProgressBar(JProgressBar progressBar) {
+		this.progressBar = progressBar;
+	}
 	
 	/**
 	 * Create the application.
@@ -68,7 +111,30 @@ public class FirstInterface {
 		initialize();
 	}
 	
+	public void updateBar(int newValue) {
+	    progressBar.setValue(newValue);
+	}
 	
+	private void progressBarUpdate() {
+		for (int i = MY_MINIMUM; i <= MY_MAXIMUM; i++) {
+			final int percent = i;
+			try {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						updateBar(percent);
+					}
+				});
+				Thread.sleep(50);
+			} 
+			catch (InterruptedException e) {
+				
+			}
+		}
+	}
+	
+	public JComboBox<Dirs> getOptionChooser() {
+		return OptionChooser;
+	}
 	
 	/**
 	 * @description: Esta función parsea las opciones de ejecucion que existe en el combobox...
@@ -105,6 +171,9 @@ public class FirstInterface {
 		case CHROME:
 			this.setCommand("taskkill /s "+ip+" /f /im chrome.exe");
 			break;
+		case Lync:
+			this.setCommand("taskkill /s "+ip+" /f /im lync.exe");
+			break;
 		default:
 			break;
 		}
@@ -112,12 +181,11 @@ public class FirstInterface {
 	
 	private void ExecuteCMD() {
 		String commandRemote = this.getCommand();
-		//System.out.println(commandRemote);
-		//String command = "powershell Rename-Item -path " + path.toString() + " -NewName "+ path.toString()+".old" + " -force ";
 		try {
+			progressBarUpdate();
 			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
 			CMDProcess.getOutputStream().close();
-			execution.append("\nSe ha cerrado correctamente\nel proceso");
+			execution.append("Se ha cerrado correctamente\nel proceso\n");
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
@@ -128,24 +196,36 @@ public class FirstInterface {
 	private void restartService() {
 		String ServiceON = this.getServiceON();
 		String ServiceOff = this.getServiceOff();
-		//System.out.println(ServiceOff);
-		//System.out.println(ServiceON);
 		try {
 			
 			Process s_Off = Runtime.getRuntime().exec(ServiceOff);
 			System.out.println(s_Off.getOutputStream());
 			s_Off.getOutputStream().close();
 			
-			
-			Thread.sleep(5000); //Pausa durante 5 segundos...
+			progressBarUpdate();
+			Thread.sleep(4500); //Pausa durante 5 segundos...
 			
 			Process s_ON = Runtime.getRuntime().exec(ServiceON);
 			s_ON.getOutputStream().close();
-			execution.append("Se ha reiniciado correctamente\nel proceso");
+			execution.append("Se ha reiniciado correctamente\nel proceso\n");
 			
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
+			//e.getStackTrace();
+		}
+	}
+	
+	private void restartComputer() {
+		String commandRemote = this.getCommand();
+		try {
+			progressBarUpdate();
+			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
+			CMDProcess.getOutputStream().close();
+			execution.append("Se ha lanzado un restart\ncorrectamente\n");
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"No se ha lanzado un restart\nremoto correctamente\n");
 			//e.getStackTrace();
 		}
 	}
@@ -163,30 +243,32 @@ public class FirstInterface {
 		KillProcesses = new JFrame();
 		KillProcesses.getContentPane().setForeground(Color.LIGHT_GRAY);
 		KillProcesses.getContentPane().setBackground(Color.LIGHT_GRAY);
-		KillProcesses.setForeground(Color.ORANGE);
-		KillProcesses.setTitle("Kill Processes");
+		KillProcesses.setForeground(Color.LIGHT_GRAY);
+		KillProcesses.setTitle("Manage Processes");
 		KillProcesses.setIconImage(Toolkit.getDefaultToolkit().getImage(FirstInterface.class.getResource("/startApp/CGP.png")));
 		KillProcesses.setResizable(false);
-		KillProcesses.setBounds(100, 100, 472, 108);
+		KillProcesses.setBounds(100, 100, 494, 115);
 		KillProcesses.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		KillProcesses.getContentPane().setLayout(null);
 		
-		JLabel IpLabel = new JLabel("IP/Machine Name:");
+		JLabel IpLabel = new JLabel("IP:");
 		IpLabel.setForeground(Color.BLACK);
 		IpLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		IpLabel.setBounds(10, 11, 98, 14);
+		IpLabel.setBounds(10, 11, 18, 12);
 		KillProcesses.getContentPane().add(IpLabel);
 		
 		
 		OptionChooser.setToolTipText("\r\n");
 		OptionChooser.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		OptionChooser.setModel(new DefaultComboBoxModel<Dirs>(Dirs.values()));
-		OptionChooser.setBounds(317, 8, 137, 20);
+		OptionChooser.setBounds(317, 8, 161, 20);
 		KillProcesses.getContentPane().add(OptionChooser);
+		ip.setForeground(new Color(0, 0, 0));
+		ip.setBackground(Color.WHITE);
 		
 		
 		ip.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		ip.setBounds(108, 8, 150, 20);
+		ip.setBounds(29, 8, 229, 20);
 		KillProcesses.getContentPane().add(ip);
 		ip.setColumns(10);
 		
@@ -198,11 +280,12 @@ public class FirstInterface {
 		
 		execution.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		execution.setEditable(false);
-		execution.setBounds(10, 32, 248, 40);
+		execution.setBounds(10, 32, 248, 43);
 		KillProcesses.getContentPane().add(execution);
 		
 		JButton SendButton = new JButton("Send");
-		SendButton.setBounds(270, 40, 89, 23);
+		SendButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		SendButton.setBounds(270, 52, 60, 23);
 		KillProcesses.getContentPane().add(SendButton);
 		
 		
@@ -213,6 +296,7 @@ public class FirstInterface {
 				parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
 				//execution.setText(command);
 				//System.out.println(command);
+				execution.setText("");
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
 				if(ipValidator(ipField)) {
@@ -226,7 +310,7 @@ public class FirstInterface {
 					}
 				}
 				else {
-					execution.setText("La IP introducida no es \ncorrecta...");
+					execution.setText("La IP introducida no es \ncorrecta...\n");
 				
 			}
 			
@@ -234,21 +318,42 @@ public class FirstInterface {
 		}});
 		
 		JButton CancelButton = new JButton("Exit");
+		CancelButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		CancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
 		});
-		CancelButton.setBounds(365, 40, 89, 23);
+		CancelButton.setBounds(418, 52, 60, 23);
 		KillProcesses.getContentPane().add(CancelButton);
+		progressBar.setForeground(new Color(0, 128, 0));
+		progressBar.setStringPainted(true);
+		progressBar.setBackground(Color.WHITE);
+		
+		
+		progressBar.setBounds(270, 32, 208, 18);
+		KillProcesses.getContentPane().add(progressBar);
+		
+		JButton restartButton = new JButton("Restart");
+		restartButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String ipField=ip.getText().replaceAll("\\s+", "");
+				setCommand("shutdown /m \\\\"+ip.getText()+" /r /f /t 00");
+				if(ipValidator(ipField)) {
+					restartComputer();
+				}
+				else {
+					execution.setText("No se ha podido lanzar\nel restart remoto\n");
+				}
+			}
+		});
+		restartButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		restartButton.setBounds(340, 52, 69, 23);
+		KillProcesses.getContentPane().add(restartButton);
 	}
 	
 
-	public JComboBox<Dirs> getOptionChooser() {
-		return OptionChooser;
-	}
-
-	
+		
 	/**
 	 * Launch the application.
 	 */
@@ -264,61 +369,5 @@ public class FirstInterface {
 				}
 			}
 		});
-	}
-
-	/**
-	 * @return the matcher
-	 */
-	public Matcher getMatcher() {
-		return matcher;
-	}
-
-	/**
-	 * @param matcher the matcher to set
-	 */
-	public void setMatcher(Matcher matcher) {
-		this.matcher = matcher;
-	}
-
-	/**
-	 * @return the pattern
-	 */
-	public Pattern getPattern() {
-		return pattern;
-	}
-
-	/**
-	 * @param pattern the pattern to set
-	 */
-	public void setPattern(Pattern pattern) {
-		this.pattern = pattern;
-	}
-
-	/**
-	 * @return the serviceON
-	 */
-	public String getServiceON() {
-		return ServiceON;
-	}
-
-	/**
-	 * @param serviceON the serviceON to set
-	 */
-	public void setServiceON(String serviceON) {
-		ServiceON = serviceON;
-	}
-
-	/**
-	 * @return the serviceOff
-	 */
-	public String getServiceOff() {
-		return ServiceOff;
-	}
-
-	/**
-	 * @param serviceOff the serviceOff to set
-	 */
-	public void setServiceOff(String serviceOff) {
-		ServiceOff = serviceOff;
 	}
 }

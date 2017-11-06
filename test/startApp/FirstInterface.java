@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,10 +18,10 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.JProgressBar;
 
 
 public class FirstInterface {
@@ -132,6 +135,9 @@ public class FirstInterface {
 		}
 	}
 	
+	
+	
+	
 	public JComboBox<Dirs> getOptionChooser() {
 		return OptionChooser;
 	}
@@ -139,7 +145,7 @@ public class FirstInterface {
 	/**
 	 * @description: Esta función parsea las opciones de ejecucion que existe en el combobox...
 	 */
-	@test
+	@TESTFUNCTIONS
 	private void parser(Dirs dir, String ip) {
 		switch (dir) {
 		case IE:
@@ -216,6 +222,7 @@ public class FirstInterface {
 		}
 	}
 	
+	@TESTFUNCTIONS
 	private void restartComputer() {
 		String commandRemote = this.getCommand();
 		try {
@@ -230,12 +237,38 @@ public class FirstInterface {
 		}
 	}
 	
-	@test
 	private boolean isService() {
 		 return getCommand().equals("");
 		
 	}
+	
+	@TESTFUNCTIONS
+	private boolean checkServiceRunning() throws IOException {
+		String query="sc query Appinfo";
+		//System.out.println(query);
+		boolean info=true;
+		Process process = Runtime.getRuntime().exec(query);
+		//----------------------------------------------------------
+		String line,newline = "";
+		BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		while ((line = stdout.readLine()) != null) {
+			newline=newline+"\n"+line;
+		}
+		//System.out.println("Línea: "+newline.toString().contains("STOPPED"));
+		stdout.close();
+		if (newline.toString().contains("STOPPED")) {
+			info=false; //Parado
+		}
+		else
+			info=true; //Activo
+		//----------------------------------------------------------
+		//System.out.println(info);
+	return info;
+		
+		
+	}
 
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -300,9 +333,21 @@ public class FirstInterface {
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
 				if(ipValidator(ipField)) {
-					if(isService()) { //falla aquí1
+					if(isService()) { 
 						parser(option, ipField);
 						restartService();
+						/*
+						try {
+							if (checkServiceRunning()) {
+								System.out.println("Service Running");
+							}
+							else {
+								System.out.println("Service Stopped");
+							}
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}*/
 					}
 					else {
 						parser(option, ipField);

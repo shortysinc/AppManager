@@ -244,7 +244,7 @@ public class FirstInterface {
 	
 	@TESTFUNCTIONS
 	private boolean checkServiceRunning() throws IOException {
-		String query="sc query Appinfo";
+		String query="cmd /c \"sc query eventsystem | find /I \"RUNNING\"\"";
 		//System.out.println(query);
 		boolean info=true;
 		Process process = Runtime.getRuntime().exec(query);
@@ -329,14 +329,14 @@ public class FirstInterface {
 				parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
 				//execution.setText(command);
 				//System.out.println(command);
+				progressBar.setValue(MY_MINIMUM);
 				execution.setText("");
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
 				if(ipValidator(ipField)) {
 					if(isService()) { 
-						parser(option, ipField);
-						restartService();
-						/*
+						//parser(option, ipField);
+						//restartService();
 						try {
 							if (checkServiceRunning()) {
 								System.out.println("Service Running");
@@ -347,7 +347,7 @@ public class FirstInterface {
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
-						}*/
+						}
 					}
 					else {
 						parser(option, ipField);

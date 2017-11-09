@@ -22,7 +22,13 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
+/**
+ * 
+ * @author Jorge R.
+ * @version 1.0
+ * @ipPruebas 10.33.162.232
+ *
+ */
 
 public class FirstInterface {
 
@@ -33,7 +39,7 @@ public class FirstInterface {
 	JProgressBar progressBar = new JProgressBar();
 	static final int MY_MINIMUM = 0;
 	static final int MY_MAXIMUM = 100;
-	private String command, ServiceON, ServiceOff="";
+	private String command,service, ServiceON, ServiceOff="";
 	private Pattern pattern;
     private Matcher matcher;
     private static final String IPADDRESS_PATTERN =
@@ -49,6 +55,19 @@ public class FirstInterface {
 		OptionChooser = optionChooser;
 	}
 
+    
+    private void initializePS() {
+		String command = "powershell.exe Set-ExecutionPolicy Unrestricted CurrentUser -Force";
+		try {		
+			Process powerShellProcess = Runtime.getRuntime().exec(command);
+			powerShellProcess.getOutputStream().close();
+			//System.out.println("Execution Policy Updated!");
+		}
+		catch (Exception e){
+			
+		}
+	}
+    
 	private boolean ipValidator(final String ip){
 		  matcher = pattern.matcher(ip);
 		  return ((matcher.matches() && !ip.equals("")) || ip.equals("localhost"));
@@ -59,10 +78,12 @@ public class FirstInterface {
 		return this.command;
 	}
 	
+	
 	private void setCommand(String command) {
 		this.command=command;
 		
 	}
+	
 	
 	/**
 	 * @return the serviceON
@@ -71,6 +92,7 @@ public class FirstInterface {
 		return ServiceON;
 	}
 
+	
 	/**
 	 * @param serviceON the serviceON to set
 	 */
@@ -78,6 +100,7 @@ public class FirstInterface {
 		ServiceON = serviceON;
 	}
 
+	
 	/**
 	 * @return the serviceOff
 	 */
@@ -85,6 +108,7 @@ public class FirstInterface {
 		return ServiceOff;
 	}
 
+	
 	/**
 	 * @param serviceOff the serviceOff to set
 	 */
@@ -92,6 +116,7 @@ public class FirstInterface {
 		ServiceOff = serviceOff;
 	}
 
+	
 	/**
 	 * @return the progressBar
 	 */
@@ -99,12 +124,14 @@ public class FirstInterface {
 		return progressBar;
 	}
 
+	
 	/**
 	 * @param progressBar the progressBar to set
 	 */
 	public void setProgressBar(JProgressBar progressBar) {
 		this.progressBar = progressBar;
 	}
+	
 	
 	/**
 	 * Create the application.
@@ -114,9 +141,11 @@ public class FirstInterface {
 		initialize();
 	}
 	
+	
 	public void updateBar(int newValue) {
 	    progressBar.setValue(newValue);
 	}
+	
 	
 	private void progressBarUpdate() {
 		for (int i = MY_MINIMUM; i <= MY_MAXIMUM; i++) {
@@ -127,15 +156,13 @@ public class FirstInterface {
 						updateBar(percent);
 					}
 				});
-				Thread.sleep(50);
+				Thread.sleep(10);
 			} 
 			catch (InterruptedException e) {
 				
 			}
 		}
 	}
-	
-	
 	
 	
 	public JComboBox<Dirs> getOptionChooser() {
@@ -145,6 +172,7 @@ public class FirstInterface {
 	/**
 	 * @description: Esta función parsea las opciones de ejecucion que existe en el combobox...
 	 */
+	/*
 	@TESTFUNCTIONS
 	private void parser(Dirs dir, String ip) {
 		switch (dir) {
@@ -184,14 +212,66 @@ public class FirstInterface {
 			break;
 		}
 	}
+	*/
 	
-	private void ExecuteCMD() {
-		String commandRemote = this.getCommand();
+	private void parser(Dirs dir, String ip) {
+		switch (dir) {
+		case IE:
+			this.setCommand("iexplore.exe");
+			break;
+		case EDGE:
+			this.setCommand("MicrosoftEdge.exe");
+			break;
+			
+		case EXCEL:
+			this.setCommand("excel.exe");
+			break;
+		case WORD:
+			this.setCommand("winword.exe");
+			break;
+		case ONELOG:
+			//this.setCommand("taskkill /s "+ip+" /f /im LoginApplication.exe");
+			this.setCommand("LoginApplication.exe");
+			this.setServiceOff("sc \\\\"+ip+" stop \"ITS Onelog Client\"");
+			this.setServiceON("sc \\\\"+ip+" start  \"ITS Onelog Client\"");
+			this.setService("\"ITS Onelog Client\"");
+			break;
+		case GP:
+			//this.setCommand("taskkill /s "+ip+" /f /im pangpa.exe");
+			//this.setCommand("sc \\\\"+ip+" stop pangps && timeout 5 && sc \\\\"+ip+" start pangps");
+			this.setCommand("pangpa.exe");
+			this.setServiceOff("sc \\\\"+ip+" stop pangps");
+			this.setServiceON("sc \\\\"+ip+" start pangps");
+			this.setService("pangps");
+			break;
+		case CHROME:
+			this.setCommand("chrome.exe");
+			break;
+		case Lync:
+			this.setCommand("lync.exe");
+			break;
+		case ND:
+			this.setCommand("ndoffice.exe");
+			break;
+		case OUTLOOK:
+			this.setCommand("outlook.exe");
+			break;
+		default:
+			break;
+		}
+	}
+
+
+
+	private void ExecuteCMD(String ipField) {
+		String commandRemote = "taskkill /s "+ipField+" /f /im "+this.getCommand();
+		//System.out.println(commandRemote);
 		try {
 			progressBarUpdate();
+			String commandOutput=OptionChooser.getSelectedItem().toString();
 			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
 			CMDProcess.getOutputStream().close();
-			execution.append("Se ha cerrado correctamente\nel proceso\n");
+			execution.append("Se ha cerrado correctamente\nel proceso: "+commandOutput+"\n");
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
@@ -199,17 +279,47 @@ public class FirstInterface {
 		}
 	}
 	
-	private void restartService() {
+	private void restartService(String ipField) {
+		/*
 		String ServiceON = this.getServiceON();
 		String ServiceOff = this.getServiceOff();
 		try {
 			
+			//sc \\10.33.162.232 stop pangps && timeout 5 && sc \\10.33.162.232 start pangps
 			Process s_Off = Runtime.getRuntime().exec(ServiceOff);
-			System.out.println(s_Off.getOutputStream());
+			//System.out.println(s_Off.getOutputStream());
 			s_Off.getOutputStream().close();
 			
 			progressBarUpdate();
 			Thread.sleep(4500); //Pausa durante 5 segundos...
+			
+			Process s_ON = Runtime.getRuntime().exec(ServiceON);
+			s_ON.getOutputStream().close();
+			execution.append("Se ha reiniciado correctamente\nel proceso\n");
+			
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
+			//e.getStackTrace();
+		}*/
+		String service=this.getService();
+		try {
+			String commandRemote = "powershell \"Get-Service -Name "+service+" -ComputerName "+ipField+" | Restart-Service\"";
+			progressBarUpdate();
+			String commandOutput=OptionChooser.getSelectedItem().toString();
+			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
+			CMDProcess.getOutputStream().close();
+			execution.append("Se ha reiniciado correctamente\nel servicio: "+commandOutput+"\n");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Ha habido un fallo al reiniciar el proceso");
+		}
+	}
+	
+	private void startService() {
+		String ServiceON = this.getServiceON();
+		try {
+			progressBarUpdate();
+			Thread.sleep(4500); //Pausa durante 4,5 segundos...
 			
 			Process s_ON = Runtime.getRuntime().exec(ServiceON);
 			s_ON.getOutputStream().close();
@@ -238,13 +348,13 @@ public class FirstInterface {
 	}
 	
 	private boolean isService() {
-		 return getCommand().equals("");
+		 return getCommand().equalsIgnoreCase("LoginApplication.exe") || getCommand().equalsIgnoreCase("pangpa.exe") || getCommand().equalsIgnoreCase("");
 		
 	}
 	
 	@TESTFUNCTIONS
-	private boolean checkServiceRunning() throws IOException {
-		String query="cmd /c \"sc query eventsystem | find /I \"RUNNING\"\"";
+	private boolean checkServiceRunning(String service) throws IOException {
+		String query="cmd /c \"sc query "+service+" | find /I \"RUNNING\"\"";
 		//System.out.println(query);
 		boolean info=true;
 		Process process = Runtime.getRuntime().exec(query);
@@ -263,9 +373,7 @@ public class FirstInterface {
 			info=true; //Activo
 		//----------------------------------------------------------
 		//System.out.println(info);
-	return info;
-		
-		
+		return info;
 	}
 
 	
@@ -273,11 +381,14 @@ public class FirstInterface {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		this.initializePS();
+		
 		KillProcesses = new JFrame();
 		KillProcesses.getContentPane().setForeground(Color.LIGHT_GRAY);
 		KillProcesses.getContentPane().setBackground(Color.LIGHT_GRAY);
 		KillProcesses.setForeground(Color.LIGHT_GRAY);
-		KillProcesses.setTitle("Manage Processes");
+		KillProcesses.setTitle("Task/Service Manager");
 		KillProcesses.setIconImage(Toolkit.getDefaultToolkit().getImage(FirstInterface.class.getResource("/startApp/CGP.png")));
 		KillProcesses.setResizable(false);
 		KillProcesses.setBounds(100, 100, 494, 115);
@@ -289,8 +400,14 @@ public class FirstInterface {
 		IpLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		IpLabel.setBounds(10, 11, 18, 12);
 		KillProcesses.getContentPane().add(IpLabel);
+		OptionChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				updateBar(MY_MINIMUM);
+				execution.setText("");
+			}
+		});
 		
-		
+		OptionChooser.setMaximumRowCount(10);
 		OptionChooser.setToolTipText("\r\n");
 		OptionChooser.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		OptionChooser.setModel(new DefaultComboBoxModel<Dirs>(Dirs.values()));
@@ -326,32 +443,35 @@ public class FirstInterface {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				parser((Dirs) OptionChooser.getSelectedItem(), ip.getText());
+				
 				//execution.setText(command);
 				//System.out.println(command);
-				progressBar.setValue(MY_MINIMUM);
+				
 				execution.setText("");
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
+				parser(option, ipField);
+				//System.out.println(isService());
 				if(ipValidator(ipField)) {
 					if(isService()) { 
 						//parser(option, ipField);
 						//restartService();
 						try {
-							if (checkServiceRunning()) {
-								System.out.println("Service Running");
+							if(checkServiceRunning(getCommand())) {
+								//restartService();
+								restartService(ipField);
 							}
 							else {
-								System.out.println("Service Stopped");
+								startService();
 							}
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+						} 
+						catch (Exception Failure) {
+							JOptionPane.showMessageDialog(null,Failure.getMessage());
 						}
 					}
 					else {
-						parser(option, ipField);
-						ExecuteCMD();
+						//parser(option, ipField);
+						ExecuteCMD(ipField);
 					}
 				}
 				else {
@@ -414,5 +534,21 @@ public class FirstInterface {
 				}
 			}
 		});
+	}
+
+
+	/**
+	 * @return the service
+	 */
+	public String getService() {
+		return service;
+	}
+
+
+	/**
+	 * @param service the service to set
+	 */
+	public void setService(String service) {
+		this.service = service;
 	}
 }

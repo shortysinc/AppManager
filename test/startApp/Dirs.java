@@ -17,7 +17,9 @@ public enum Dirs {
 	GP("Global Protect"),
 	IE("Internet Explorer"),
 	Lync("Lync"),
+	ND("NetDocuments"),
 	ONELOG("Onelog"),
+	OUTLOOK("Outlook"),
 	WORD("Word");
 	      
 	private String dir;

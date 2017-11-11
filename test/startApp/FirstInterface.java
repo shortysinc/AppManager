@@ -39,7 +39,7 @@ public class FirstInterface {
 	JProgressBar progressBar = new JProgressBar();
 	static final int MY_MINIMUM = 0;
 	static final int MY_MAXIMUM = 100;
-	private String command,service, ServiceON, ServiceOff="";
+	private String command,service, ServiceON;
 	private Pattern pattern;
     private Matcher matcher;
     private static final String IPADDRESS_PATTERN =
@@ -90,30 +90,6 @@ public class FirstInterface {
 	 */
 	private String getServiceON() {
 		return ServiceON;
-	}
-
-	
-	/**
-	 * @param serviceON the serviceON to set
-	 */
-	private void setServiceON(String serviceON) {
-		ServiceON = serviceON;
-	}
-
-	
-	/**
-	 * @return the serviceOff
-	 */
-	private String getServiceOff() {
-		return ServiceOff;
-	}
-
-	
-	/**
-	 * @param serviceOff the serviceOff to set
-	 */
-	private void setServiceOff(String serviceOff) {
-		ServiceOff = serviceOff;
 	}
 
 	
@@ -232,16 +208,16 @@ public class FirstInterface {
 		case ONELOG:
 			//this.setCommand("taskkill /s "+ip+" /f /im LoginApplication.exe");
 			this.setCommand("LoginApplication.exe");
-			this.setServiceOff("sc \\\\"+ip+" stop \"ITS Onelog Client\"");
-			this.setServiceON("sc \\\\"+ip+" start  \"ITS Onelog Client\"");
+			//this.setServiceOff("sc \\\\"+ip+" stop \"ITS Onelog Client\"");
+			//this.setServiceON("sc \\\\"+ip+" start  \"ITS Onelog Client\"");
 			this.setService("\"ITS Onelog Client\"");
 			break;
 		case GP:
 			//this.setCommand("taskkill /s "+ip+" /f /im pangpa.exe");
 			//this.setCommand("sc \\\\"+ip+" stop pangps && timeout 5 && sc \\\\"+ip+" start pangps");
 			this.setCommand("pangpa.exe");
-			this.setServiceOff("sc \\\\"+ip+" stop pangps");
-			this.setServiceON("sc \\\\"+ip+" start pangps");
+			//this.setServiceOff("sc \\\\"+ip+" stop pangps");
+			//this.setServiceON("sc \\\\"+ip+" start pangps");
 			this.setService("pangps");
 			break;
 		case CHROME:

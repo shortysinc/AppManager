@@ -20,6 +20,7 @@ public enum Dirs {
 	ND("NetDocuments"),
 	ONELOG("Onelog"),
 	OUTLOOK("Outlook"),
+	REKOOP("Rekoop"),
 	WORD("Word");
 	      
 	private String dir;

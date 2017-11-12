@@ -132,7 +132,7 @@ public class FirstInterface {
 						updateBar(percent);
 					}
 				});
-				Thread.sleep(10);
+				Thread.sleep(5);
 			} 
 			catch (InterruptedException e) {
 				
@@ -232,6 +232,8 @@ public class FirstInterface {
 		case OUTLOOK:
 			this.setCommand("outlook.exe");
 			break;
+		case REKOOP:
+			this.setCommand("sllauncher.exe");
 		default:
 			break;
 		}

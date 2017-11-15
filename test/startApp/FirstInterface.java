@@ -22,6 +22,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import startApp.Constants;
 /**
  * 
  * @author Jorge R.
@@ -37,29 +38,23 @@ public class FirstInterface {
 	JTextArea execution = new JTextArea();
 	JComboBox<Dirs> OptionChooser = new JComboBox<Dirs>();
 	JProgressBar progressBar = new JProgressBar();
-	static final int MY_MINIMUM = 0;
-	static final int MY_MAXIMUM = 100;
+	
 	private String command,service, ServiceON;
 	private Pattern pattern;
     private Matcher matcher;
-    private static final String IPADDRESS_PATTERN =
-    		"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-    		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-    		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-    		"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+    
     
 	
     
     public FirstInterface(JComboBox<Dirs> optionChooser) {
-		pattern = Pattern.compile(IPADDRESS_PATTERN);
+		pattern = Pattern.compile(Constants.IPADDRESS_PATTERN);
 		OptionChooser = optionChooser;
 	}
 
     
     private void initializePS() {
-		String command = "powershell.exe Set-ExecutionPolicy Unrestricted CurrentUser -Force";
 		try {		
-			Process powerShellProcess = Runtime.getRuntime().exec(command);
+			Process powerShellProcess = Runtime.getRuntime().exec(Constants.initializePS);
 			powerShellProcess.getOutputStream().close();
 			//System.out.println("Execution Policy Updated!");
 		}
@@ -70,7 +65,7 @@ public class FirstInterface {
     
 	private boolean ipValidator(final String ip){
 		  matcher = pattern.matcher(ip);
-		  return ((matcher.matches() && !ip.equals("")) || ip.equals("localhost"));
+		  return ((matcher.matches() && !ip.equals(Constants.emptyString)) || ip.equals(Constants.localhost));
 	}
 	
 
@@ -113,7 +108,7 @@ public class FirstInterface {
 	 * Create the application.
 	 */
 	public FirstInterface() throws Exception {
-		pattern = Pattern.compile(IPADDRESS_PATTERN);
+		pattern = Pattern.compile(Constants.IPADDRESS_PATTERN);
 		initialize();
 	}
 	
@@ -124,7 +119,7 @@ public class FirstInterface {
 	
 	
 	private void progressBarUpdate() {
-		for (int i = MY_MINIMUM; i <= MY_MAXIMUM; i++) {
+		for (int i = Constants.MY_MINIMUM; i <= Constants.MY_MAXIMUM; i++) {
 			final int percent = i;
 			try {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -190,7 +185,7 @@ public class FirstInterface {
 	}
 	*/
 	
-	private void parser(Dirs dir, String ip) {
+	private void parser(Dirs dir) {
 		switch (dir) {
 		case IE:
 			this.setCommand("iexplore.exe");
@@ -234,6 +229,16 @@ public class FirstInterface {
 			break;
 		case REKOOP:
 			this.setCommand("sllauncher.exe");
+			break;
+		case Acrobat:
+			this.setCommand("AcroRd32.exe");
+			break;
+		case Nuance:
+			this.setCommand("NuancePDF.exe");
+			break;
+		case PPOINT:
+			this.setCommand("POWERPNT.exe");
+			break;
 		default:
 			break;
 		}
@@ -249,10 +254,10 @@ public class FirstInterface {
 			String commandOutput=OptionChooser.getSelectedItem().toString();
 			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
 			CMDProcess.getOutputStream().close();
-			execution.append("Se ha cerrado correctamente\nel proceso: "+commandOutput+"\n");
+			execution.append(Constants.process_closed+commandOutput+"\n");
 		}
 		catch (Exception e) {
-			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
+			JOptionPane.showMessageDialog(null,Constants.fail_close);
 			//e.getStackTrace();
 		}
 	}
@@ -287,9 +292,9 @@ public class FirstInterface {
 			String commandOutput=OptionChooser.getSelectedItem().toString();
 			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
 			CMDProcess.getOutputStream().close();
-			execution.append("Se ha reiniciado correctamente\nel servicio: "+commandOutput+"\n");
+			execution.append(Constants.restart_process+commandOutput+"\n");
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,"Ha habido un fallo al reiniciar el proceso");
+			JOptionPane.showMessageDialog(null,Constants.fail_restart);
 		}
 	}
 	
@@ -301,11 +306,11 @@ public class FirstInterface {
 			
 			Process s_ON = Runtime.getRuntime().exec(ServiceON);
 			s_ON.getOutputStream().close();
-			execution.append("Se ha reiniciado correctamente\nel proceso\n");
+			execution.append(Constants.start_process);
 			
 		}
 		catch (Exception e) {
-			JOptionPane.showMessageDialog(null,"Ha habido un fallo al cerrar el proceso");
+			JOptionPane.showMessageDialog(null,Constants.fail_close);
 			//e.getStackTrace();
 		}
 	}
@@ -317,16 +322,16 @@ public class FirstInterface {
 			progressBarUpdate();
 			Process CMDProcess = Runtime.getRuntime().exec(commandRemote);
 			CMDProcess.getOutputStream().close();
-			execution.append("Se ha lanzado un restart\ncorrectamente\n");
+			execution.append(Constants.restart_computer);
 		}
 		catch (Exception e) {
-			JOptionPane.showMessageDialog(null,"No se ha lanzado un restart\nremoto correctamente\n");
+			JOptionPane.showMessageDialog(null,Constants.restart_fail);
 			//e.getStackTrace();
 		}
 	}
 	
 	private boolean isService() {
-		 return getCommand().equalsIgnoreCase("LoginApplication.exe") || getCommand().equalsIgnoreCase("pangpa.exe") || getCommand().equalsIgnoreCase("");
+		 return getCommand().equalsIgnoreCase(Constants.onelog) || getCommand().equalsIgnoreCase(Constants.global_protect) || getCommand().equalsIgnoreCase(Constants.emptyString);
 		
 	}
 	
@@ -380,12 +385,10 @@ public class FirstInterface {
 		KillProcesses.getContentPane().add(IpLabel);
 		OptionChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				updateBar(MY_MINIMUM);
+				updateBar(Constants.MY_MINIMUM);
 				execution.setText("");
 			}
 		});
-		
-		OptionChooser.setMaximumRowCount(10);
 		OptionChooser.setToolTipText("\r\n");
 		OptionChooser.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		OptionChooser.setModel(new DefaultComboBoxModel<Dirs>(Dirs.values()));
@@ -428,7 +431,7 @@ public class FirstInterface {
 				execution.setText("");
 				String ipField=ip.getText().replaceAll("\\s+", "");
 				Dirs option= (Dirs) OptionChooser.getSelectedItem();
-				parser(option, ipField);
+				parser(option);
 				//System.out.println(isService());
 				if(ipValidator(ipField)) {
 					if(isService()) { 
@@ -486,7 +489,7 @@ public class FirstInterface {
 					restartComputer();
 				}
 				else {
-					execution.setText("No se ha podido lanzar\nel restart remoto\n");
+					execution.setText(Constants.fail_restart);
 				}
 			}
 		});

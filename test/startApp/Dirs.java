@@ -11,6 +11,7 @@ package startApp;
 
 public enum Dirs {
 	
+	Acrobat("Acrobat Reader"),
 	CHROME("Chrome"),
 	EDGE("Edge"),
 	EXCEL("Excel"),
@@ -18,8 +19,10 @@ public enum Dirs {
 	IE("Internet Explorer"),
 	Lync("Lync"),
 	ND("NetDocuments"),
+	Nuance("Nuance PDF"),
 	ONELOG("Onelog"),
 	OUTLOOK("Outlook"),
+	PPOINT("Power Point"),
 	REKOOP("Rekoop"),
 	WORD("Word");
 	      

@@ -22,4 +22,5 @@ public class Constants {
 	public static final String restart_fail="No se ha lanzado un restart\nremoto correctamente\n";
 	public static final String onelog="LoginApplication.exe";
 	public static final String global_protect="pangpa.exe";
+	public static final String ip_incorrect="La IP introducida no es \ncorrecta...\n";
 }

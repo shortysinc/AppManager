@@ -22,7 +22,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import startApp.Constants;
 /**
  * 
  * @author Jorge R.
@@ -415,6 +414,8 @@ public class FirstInterface {
 		KillProcesses.getContentPane().add(execution);
 		
 		JButton SendButton = new JButton("Send");
+		
+		
 		SendButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		SendButton.setBounds(270, 52, 60, 23);
 		KillProcesses.getContentPane().add(SendButton);
@@ -424,9 +425,6 @@ public class FirstInterface {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				//execution.setText(command);
-				//System.out.println(command);
 				
 				execution.setText("");
 				String ipField=ip.getText().replaceAll("\\s+", "");
@@ -456,10 +454,9 @@ public class FirstInterface {
 					}
 				}
 				else {
-					execution.setText("La IP introducida no es \ncorrecta...\n");
+					execution.setText(Constants.ip_incorrect);
 				
 			}
-			
 			
 		}});
 		
@@ -467,7 +464,7 @@ public class FirstInterface {
 		CancelButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		CancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
+				KillProcesses.dispose();
 			}
 		});
 		CancelButton.setBounds(418, 52, 60, 23);
